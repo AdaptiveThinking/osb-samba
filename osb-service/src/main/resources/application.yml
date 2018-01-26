@@ -1,0 +1,71 @@
+---
+spring:
+  ### Profile ###
+  profiles: default
+
+### Persistence ###
+#### mongo db ####
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      database: admin
+      username: jsmith
+      password: some-initial-password
+server:
+  port: 8999
+messaging:
+  rabbitmq:
+    port: 5672
+    host: 172.16.105.14
+    vhost: sbbackend
+    username: sbbackend
+    password:
+### Login Information ###
+login:
+  username: admin
+  password: cloudfoundry
+  role: USER
+  
+## Rest Credentials ##
+## Bosh Configuration ##
+bosh:
+  host: 217.26.224.38
+  username: admin
+  password: 85kmhckr90h27g0fg84k
+  stemcellOs: ubuntu-trusty
+  stemcellVersion: 3468.13
+
+
+catalog:
+  services:
+    - id: smb-dev
+      name: smb-DEV
+      description: smb Instances
+      bindable: true
+      plans:
+        - id: smb_s_dev
+          name: S
+          description: A simple storage Plan
+          free: false
+          volumeSize: 15
+          volumeUnit: G
+          platform: BOSH
+        - id: smb_m_dev
+          name: M
+          description: A simple storage Plan
+          free: false
+          volumeSize: 100
+          volumeUnit: G
+          platform: BOSH
+        - id: smb_l_dev
+          name: L
+          description: A simple storage Plan
+          free: false
+          volumeSize: 1
+          volumeUnit: T
+          platform: BOSH
+
+    ## General Settings ##
+general:
+  endpointUrl: https://smb-dev.cf.dev.eu-de-central.msh.host

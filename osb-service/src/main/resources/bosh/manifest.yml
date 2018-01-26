@@ -1,0 +1,37 @@
+---
+# https://bosh.io/docs/cli-v2.html#deployment-mgmt
+name: smb
+
+releases:
+- name: smb
+  version: latest
+
+update: 
+  canaries: 1
+  canary_watch_time: 15000-30000
+  update_watch_time: 15000-30000
+  max_in_flight: 1
+
+features:
+  use_dns_addresses: true  
+
+stemcells:
+  - alias: default
+    os: ubuntu-trusty
+    version: latest 
+
+
+jobs:
+- name: samba
+  release: smb
+  instances: 1
+  vm_type: tiny
+  persistent_disk: 10000
+  stemcell: default
+  jobs:
+  - release: smb
+    name: samba
+  networks:
+  - name: default
+
+         
