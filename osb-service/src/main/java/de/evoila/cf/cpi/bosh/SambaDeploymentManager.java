@@ -18,6 +18,7 @@ import java.util.*;
 public class SambaDeploymentManager extends DeploymentManager{
     public static final String VOLUME_SIZE = "volumeSize";
     public static final String VM_TYPE = "vm_type";
+    public static final String VOLUME_UNIT = "volumeUnit";
 
     public SambaDeploymentManager(BoshProperties properties) {
        super (properties);
@@ -46,8 +47,8 @@ public class SambaDeploymentManager extends DeploymentManager{
         instance.setUsername((String)rest.get("user"));
         instance.setPassword((String)rest.get("password"));
 
-        if(properties.containsKey(VOLUME_SIZE)){
-            manifest.getJobs().get(0).setPersistent_disk_type((String) properties.get(VOLUME_SIZE));
+        if(plan.getVolumeSize() != null){
+            manifest.getJobs().get(0).setPersistent_disk(plan.getVolumeSize(), plan.getVolumeUnit());
         }
         if(properties.containsKey(VM_TYPE)){
             manifest.getJobs().get(0).setVm_type((String) properties.get(VM_TYPE));

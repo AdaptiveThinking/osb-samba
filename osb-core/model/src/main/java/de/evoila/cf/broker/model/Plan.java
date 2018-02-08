@@ -42,7 +42,7 @@ public class Plan {
 	@JsonProperty(value = "plan_updateable",required = false, defaultValue = "false")
 	private boolean planUpdateable;
 
-	private int volumeSize;
+	private Integer volumeSize;
 
 	private VolumeUnit volumeUnit;
 
@@ -58,7 +58,7 @@ public class Plan {
 		super();
 	}
 
-	public int getVolumeSize() {
+	public Integer getVolumeSize() {
 		return volumeSize;
 	}
 
