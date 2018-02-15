@@ -1,5 +1,6 @@
 package de.evoila.cf.cpi.bosh.connection;
 
+import io.bosh.client.Authentication;
 import io.bosh.client.DirectorClient;
 import io.bosh.client.SpringDirectorClientBuilder;
 import org.slf4j.Logger;
@@ -18,21 +19,23 @@ public class BoshConnection {
     private String host;
     private String username;
     private String password;
+    private Authentication authentication;
 
-    public BoshConnection (String username, String password, String host){
+    public BoshConnection (String username, String password, String host, Authentication authentication ){
         Assert.notNull(host, "Bosh Director Host may not be empty, when initializing");
         Assert.notNull(username, "Bosh Director Username may not be empty, when initializing");
         Assert.notNull(password, "Bosh Director Password may not be empty, when initializing");
         this.host = host;
         this.username = username;
         this.password = password;
+        this.authentication = authentication;
     }
 
 
     public BoshConnection authenticate() {
         directorClient = new SpringDirectorClientBuilder()
                                .withHost(host)
-                               .withCredentials(username, password)
+                               .withCredentials(username, password, authentication)
                                .build();
         return this;
     }

@@ -6,12 +6,10 @@ package de.evoila.cf.broker.service.custom;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import de.evoila.cf.broker.model.*;
 import com.jcraft.jsch.JSchException;
-import de.evoila.cf.broker.exception.PlatformException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,9 +20,7 @@ import rx.Observable;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.Session;
-import de.evoila.cf.broker.bean.*;
 import de.evoila.cf.broker.bean.BoshProperties;
-import de.evoila.cf.broker.model.*;
 import de.evoila.cf.cpi.bosh.connection.BoshConnection;
 import io.bosh.client.deployments.SSHConfig;
 import org.slf4j.Logger;
@@ -61,17 +57,17 @@ public class ExampleBindingService extends BindingServiceImpl {
 	 */
 	@Override
 	protected Map<String, Object> createCredentials(String bindingId, ServiceInstance serviceInstance,
-			ServerAddress host, Plan plan) throws ServiceBrokerException {
+			ServerAddress host, Plan plan, ServiceInstanceBindingRequest request) throws ServiceBrokerException {
 
 		SecureRandom random = new SecureRandom();
 		Map<String, Object> credentials = new HashMap<String, Object>();
 		credentials.put("password", new BigInteger(130, random).toString(32));
-
+		String username = bindingId.replaceAll("[\\s\\-()]", "");
 
 		//creating HTTP Request
 		RestTemplate restTemplate = new RestTemplate();
-		HttpEntity<Map<String, Object>> request = new HttpEntity<Map<String, Object>>(credentials, getHttpHeaders(serviceInstance));
-		ResponseEntity<Map>  response = restTemplate.exchange("http://"+host.getIp() + ":5000/user/" +bindingId, HttpMethod.POST, request, Map.class);
+		HttpEntity<Map<String, Object>> postRequest = new HttpEntity<Map<String, Object>>(credentials, getHttpHeaders(serviceInstance));
+		ResponseEntity<Map>  response = restTemplate.exchange("http://"+host.getIp() + ":5000/user/" + username, HttpMethod.POST, postRequest, Map.class);
 		credentials = (Map<String, Object>) response.getBody();
 		if(credentials.containsKey("failure")){
 			log.error("creating credentials failed");
@@ -100,6 +96,38 @@ public class ExampleBindingService extends BindingServiceImpl {
 	}
 
 	@Override
+	protected List<VolumeMounts> createMountPoint(String bindingId, ServiceInstance serviceInstance, ServerAddress host, Plan plan, ServiceInstanceBindingRequest request, Map<String, Object> credentials) throws ServiceBrokerException {
+		VolumeMounts volumeMounts = new VolumeMounts();
+		if (serviceInstance.getHosts().get(0) == null)
+			return null;
+
+		//Set Mountpoint on container default is /mnt/
+		if (request != null && request.getParameters() != null && request.getParameters().containsKey("container_dir")) {
+			volumeMounts.setContainer_dir(request.getParameters().get("container_dir"));
+		} else {
+			volumeMounts.setContainer_dir("/mnt/");
+		}
+
+		volumeMounts.setDriver("smbdriver");
+		volumeMounts.setMode(VolumeMode.rw);
+		volumeMounts.setDevice_type(DeviceType.shared);
+
+		//configuring Mount config Object
+		MountConfig mountConfig = new MountConfig("0777", "0777");
+		mountConfig.setUsername((String) credentials.get("username"));
+		mountConfig.setPassword((String) credentials.get("password"));
+		mountConfig.setSource("//" + serviceInstance.getHosts().get(0).getIp() + "/volume");
+
+		Device device = new Device("volume", mountConfig);
+
+		volumeMounts.setDevice(device);
+
+		return Arrays.asList(volumeMounts);
+
+	}
+
+
+	@Override
 	public ServiceInstanceBinding getServiceInstanceBinding(String id) {
 		throw new UnsupportedOperationException();
 	}
@@ -125,7 +153,7 @@ public class ExampleBindingService extends BindingServiceImpl {
 		try {
 			connection = new BoshConnection(boshProperties.getUsername(),
 					boshProperties.getPassword(),
-					boshProperties.getHost()).authenticate();
+					boshProperties.getHost(), boshProperties.getAuthentication()).authenticate();
 			Observable<Session> oSession = connection.connection().vms().ssh(new SSHConfig("smb" + serviceInstance, "serviceBroker", null, "samba", VMINDEX), "get_credentials.sh");
 			Session session = oSession.toBlocking().first();
 			Channel chanel = session.openChannel("shell");

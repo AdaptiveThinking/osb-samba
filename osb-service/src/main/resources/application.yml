@@ -26,7 +26,7 @@ login:
   username: admin
   password: cloudfoundry
   role: USER
-  
+
 ## Rest Credentials ##
 ## Bosh Configuration ##
 bosh:
@@ -35,6 +35,7 @@ bosh:
   password: 85kmhckr90h27g0fg84k
   stemcellOs: ubuntu-trusty
   stemcellVersion: 3468.13
+  authentication: BASIC
 
 
 catalog:
@@ -51,6 +52,8 @@ catalog:
           volumeSize: 15
           volumeUnit: G
           platform: BOSH
+          requires:
+            - volume_mount
         - id: smb_m_dev
           name: M
           description: A simple storage Plan
@@ -58,6 +61,8 @@ catalog:
           volumeSize: 100
           volumeUnit: G
           platform: BOSH
+          requires:
+            - volume_mount
         - id: smb_l_dev
           name: L
           description: A simple storage Plan

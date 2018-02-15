@@ -44,7 +44,7 @@ public abstract class BoshPlatformService extends PlatformServiceAdapter {
     private final Optional<DashboardClient> dashboardClient;
     private final BoshProperties boshProperties;
     private final CatalogService catalogService;
-    ;
+
 
 
     public BoshPlatformService (PlatformRepository repository,
@@ -68,7 +68,8 @@ public abstract class BoshPlatformService extends PlatformServiceAdapter {
         this.boshProperties = boshProperties;
         connection = new BoshConnection(boshProperties.getUsername(),
                                         boshProperties.getPassword(),
-                                        boshProperties.getHost()).authenticate();
+                                        boshProperties.getHost(),
+                                        boshProperties.getAuthentication()).authenticate();
     }
 
     @Override
