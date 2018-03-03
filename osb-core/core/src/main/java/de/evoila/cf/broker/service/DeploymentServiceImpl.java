@@ -28,9 +28,6 @@ import de.evoila.cf.broker.repository.JobRepository;
 import de.evoila.cf.broker.repository.PlatformRepository;
 import de.evoila.cf.broker.repository.ServiceDefinitionRepository;
 import de.evoila.cf.broker.repository.ServiceInstanceRepository;
-import de.evoila.cf.broker.service.AsyncDeploymentService;
-import de.evoila.cf.broker.service.DeploymentService;
-import de.evoila.cf.broker.service.PlatformService;
 import de.evoila.cf.cpi.custom.props.DomainBasedCustomPropertyHandler;
 
 /**
@@ -187,6 +184,7 @@ public class DeploymentServiceImpl implements DeploymentService {
 	@Override
 	public void deleteServiceInstance(String instanceId)
 			throws ServiceBrokerException, ServiceInstanceDoesNotExistException {
+		log.info("Log at DeploymentServiceImpl L190. InstanceId=" + instanceId);
 		ServiceInstance serviceInstance = serviceInstanceRepository.getServiceInstance(instanceId);
 
 		if (serviceInstance == null) {

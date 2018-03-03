@@ -46,6 +46,7 @@ public class SambaDeploymentManager extends DeploymentManager{
            //persist credentials in serviceInstant Object
         instance.setUsername((String)rest.get("user"));
         instance.setPassword((String)rest.get("password"));
+        instance.setUsergroup((String) smb.get("usergroup"));
 
         if(plan.getVolumeSize() != null){
             manifest.getJobs().get(0).setPersistent_disk(plan.getVolumeSize(), plan.getVolumeUnit());

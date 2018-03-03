@@ -69,7 +69,8 @@ public abstract class BoshPlatformService extends PlatformServiceAdapter {
         connection = new BoshConnection(boshProperties.getUsername(),
                                         boshProperties.getPassword(),
                                         boshProperties.getHost(),
-                                        boshProperties.getAuthentication()).authenticate();
+                                        boshProperties.getAuthentication()
+                ).authenticate();
     }
 
     @Override
@@ -166,14 +167,17 @@ public abstract class BoshPlatformService extends PlatformServiceAdapter {
 
     @Override
     public void deleteServiceInstance (ServiceInstance serviceInstance) throws PlatformException {
-        Observable<Deployment> obs = connection.connection().deployments().get(deploymentManager.getDeployment(serviceInstance).getName());
+        //Observable<Deployment> obs = connection.connection().deployments().get(deploymentManager.getDeployment(serviceInstance).getName());
+        String deploymentName = "sb-"+ serviceInstance.getId();
         try {
-            Deployment deployment = obs.toBlocking().first();
-            Observable<List<ErrandSummary>> errands = connection.connection().errands().list(deployment.getName());
-            runDeleteErrands(serviceInstance, deployment, errands);
+            //Deployment deployment = obs.toBlocking().first();
+            //Observable<List<ErrandSummary>> errands = connection.connection().errands().list(deployment.getName());
+            //runDeleteErrands(serviceInstance, deployment, errands);
+            Deployment deployment = new Deployment();
+            deployment.setName(deploymentName);
             connection.connection().deployments().delete(deployment);
         } catch (Exception e){
-            throw new PlatformException("Could not delete failed service instance", e);
+            throw new PlatformException("Could not delete service instance", e);
         }
     }
 

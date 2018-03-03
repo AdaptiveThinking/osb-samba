@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="372f368f-8e72-47bd-971b-976543e2c76d" name="Default" comment="" />
+    <list default="true" id="372f368f-8e72-47bd-971b-976543e2c76d" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/osb-core/core/pom.xml" afterPath="$PROJECT_DIR$/osb-core/core/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/osb-core/core/src/main/java/de/evoila/cf/broker/service/DeploymentServiceImpl.java" afterPath="$PROJECT_DIR$/osb-core/core/src/main/java/de/evoila/cf/broker/service/DeploymentServiceImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/osb-core/model/pom.xml" afterPath="$PROJECT_DIR$/osb-core/model/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/osb-core/model/src/main/java/de/evoila/cf/broker/model/ServiceInstance.java" afterPath="$PROJECT_DIR$/osb-core/model/src/main/java/de/evoila/cf/broker/model/ServiceInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/osb-deployment/bosh/src/main/java/de/evoila/cf/broker/bean/BoshProperties.java" afterPath="$PROJECT_DIR$/osb-deployment/bosh/src/main/java/de/evoila/cf/broker/bean/BoshProperties.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/osb-deployment/bosh/src/main/java/de/evoila/cf/cpi/bosh/BoshPlatformService.java" afterPath="$PROJECT_DIR$/osb-deployment/bosh/src/main/java/de/evoila/cf/cpi/bosh/BoshPlatformService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/osb-deployment/bosh/src/main/java/de/evoila/cf/cpi/bosh/connection/BoshConnection.java" afterPath="$PROJECT_DIR$/osb-deployment/bosh/src/main/java/de/evoila/cf/cpi/bosh/connection/BoshConnection.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/osb-service/src/main/resources/static/stats.json" afterPath="$PROJECT_DIR$/osb-service/src/main/resources/static/stats.json" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,10 +34,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1440" />
-    <option name="y" value="-805" />
+    <option name="x" value="400" />
+    <option name="y" value="22" />
     <option name="width" value="1280" />
-    <option name="height" value="1418" />
+    <option name="height" value="1028" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -48,8 +57,8 @@
     <panes>
       <pane id="ProjectPane" />
       <pane id="PackagesPane" />
-      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -308,6 +317,7 @@
       <setting name="passParentEnv" value="true" />
       <setting name="launchBrowser" value="true" />
       <setting name="launchBrowserUrl" value="" />
+      <setting name="depsClasspath" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
@@ -370,13 +380,13 @@
     </configuration>
     <configuration default="true" type="JetRunConfigurationType" factoryName="Kotlin">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="MAIN_CLASS_NAME" />
       <option name="VM_PARAMETERS" />
       <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="WORKING_DIRECTORY" />
       <module name="" />
       <envs />
       <method />
@@ -436,6 +446,12 @@
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.npm" factoryName="npm">
@@ -465,14 +481,15 @@
       <workItem from="1516353927841" duration="13000" />
       <workItem from="1516353954956" duration="247000" />
       <workItem from="1516354471263" duration="125000" />
+      <workItem from="1519471756003" duration="11000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="385000" />
+    <option name="totallyTimeSpent" value="396000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1440" y="-805" width="1280" height="1418" extended-state="0" />
+    <frame x="400" y="22" width="1280" height="1028" extended-state="0" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -488,7 +505,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32734376" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33279485" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />

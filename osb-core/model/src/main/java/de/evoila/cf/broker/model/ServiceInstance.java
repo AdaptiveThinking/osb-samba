@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import org.springframework.data.annotation.Id;
 /**
  * An instance of a ServiceDefinition.
  * 
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonAutoDetect(getterVisibility = Visibility.NONE)
 public class ServiceInstance implements BaseEntity<String> {
 
+	@Id
 	@JsonSerialize
 	@JsonProperty("service_instance_id")
 	private String id;
@@ -54,7 +56,7 @@ public class ServiceInstance implements BaseEntity<String> {
 	@JsonSerialize
 	@JsonProperty("hosts")
 	private List<ServerAddress> hosts;
-	
+
 	@JsonSerialize
 	@JsonProperty("context")
 	private Map<String, String> context;
@@ -64,6 +66,17 @@ public class ServiceInstance implements BaseEntity<String> {
 
 	@JsonIgnore
 	private String password;
+
+	@JsonIgnore
+	private String usergroup;
+
+	public String getUsergroup() {
+		return usergroup;
+	}
+
+	public void setUsergroup(String usergroup) {
+		this.usergroup = usergroup;
+	}
 
 	@SuppressWarnings("unused")
 	private ServiceInstance() {

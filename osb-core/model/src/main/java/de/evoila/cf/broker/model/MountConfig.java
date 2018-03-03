@@ -16,6 +16,7 @@ public class MountConfig {
     private String username;
     private String password;
     private String source;
+    private String target;
 
 
     public MountConfig(String uid, String gid, String file_mode, String dir_mode) {
@@ -24,13 +25,22 @@ public class MountConfig {
         this.file_mode = file_mode;
         this.dir_mode = dir_mode;
     }
-    public MountConfig(String file_mode, String dir_mode){
+
+    public MountConfig(String file_mode, String dir_mode) {
         this(null, null, file_mode, dir_mode);
     }
-    public MountConfig(){
+
+    public MountConfig() {
 
     }
 
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
 
     public String getUsername() {
         return username;
