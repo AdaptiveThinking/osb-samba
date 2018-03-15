@@ -1,4 +1,5 @@
 package de.evoila.cf.broker.bean;
+
 import io.bosh.client.Authentication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,11 +15,16 @@ public class BoshProperties {
 
     private String host;
 
+    private int port = 25555;
+
     private String username;
 
     private String password;
+
     private String stemcellVersion;
+
     private String stemcellOs;
+
     private Authentication authentication;
 
     public String getHost() {
@@ -28,6 +34,10 @@ public class BoshProperties {
     public void setHost(String host) {
         this.host = host;
     }
+
+    public int getPort() { return port; }
+
+    public void setPort(int port) { this.port = port;  }
 
     public String getUsername() {
         return username;

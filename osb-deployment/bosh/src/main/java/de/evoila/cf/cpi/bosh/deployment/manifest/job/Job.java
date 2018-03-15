@@ -1,6 +1,7 @@
 package de.evoila.cf.cpi.bosh.deployment.manifest.job;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import de.evoila.cf.broker.model.VolumeUnit;
 import de.evoila.cf.cpi.bosh.deployment.manifest.network.Network;
 import de.evoila.cf.cpi.bosh.deployment.manifest.ResourcePool;
 import sun.nio.ch.Net;
@@ -19,7 +20,15 @@ public class Job {
     private List<Template> templates;
     private List<Network> networks;
     private Map<String, Object> properties;
+    private String Vm_type;
 
+    public String getVm_type() {
+        return Vm_type;
+    }
+
+    public void setVm_type(String vm_type) {
+        Vm_type = vm_type;
+    }
 
     public String getName () {
         return name;
@@ -36,7 +45,18 @@ public class Job {
     public void setPersistent_disk (int persistent_disk) {
         this.persistent_disk = persistent_disk;
     }
+    public void setPersistent_disk (int persistent_disk, VolumeUnit unit) {
+        switch(unit){
+            case M: this.persistent_disk = persistent_disk;
+                break;
+            case G : this.persistent_disk = persistent_disk*1000;
+                break;
+            case T: this.persistent_disk = persistent_disk*  1000 * 1000;
+                    break;
 
+
+        }
+    }
     public int getInstances () {
         return instances;
     }

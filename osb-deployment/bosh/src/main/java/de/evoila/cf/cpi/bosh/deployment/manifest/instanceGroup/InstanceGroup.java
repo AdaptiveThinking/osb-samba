@@ -9,9 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@JsonIgnoreProperties(
-      ignoreUnknown = true
-)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class InstanceGroup {
     private String name;
     private List<String> azs;

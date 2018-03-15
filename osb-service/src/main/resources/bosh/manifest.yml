@@ -3,7 +3,7 @@
 name: smb
 
 releases:
-- name: smb
+- name: samba
   version: latest
 
 update:
@@ -22,13 +22,22 @@ stemcells:
 
 jobs:
 - name: samba
-  release: smb
+  release: samba
   instances: 1
   vm_type: minimal
   persistent_disk: 10000
   stemcell: default
   jobs:
-  - release: smb
+  - release: samba
     name: samba
   networks:
   - name: service-1
+  properties:
+    smb:
+      usergroup:
+        testuser
+    rest:
+      user:
+        test
+      password:
+        test

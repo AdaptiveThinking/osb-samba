@@ -27,9 +27,9 @@ public class ManifestGeneratorTest extends ManifestTest {
     DeploymentManager deploymentManager;
 
     Manifest manifest;
-
-
-    @Before public void before() throws IOException, URISyntaxException {
+    
+    @Before 
+    public void before() throws IOException, URISyntaxException {
         manifest = new Manifest();
         manifest.setDirector_uuid(DIRECTOR_UUID);
         manifest.setName(DEPLOYMENT_NAME);
@@ -74,14 +74,14 @@ public class ManifestGeneratorTest extends ManifestTest {
         Network jobNetwork = new Network();
         jobNetwork.setName(NETWORK_NAME);
 
-        Job job = new Job();
+       /* Job job = new Job();
         job.setInstances(INSTANCES);
         job.setName(JOB_NAME);
         job.setPersistent_disk(JOB_PERSISTENT_DISK);
         job.setResource_pool(R_POOL_NAME);
         job.getTemplates().add(t);
         job.getNetworks().add(jobNetwork);
-        job.getProperties().put("TEST","TEST");
+        job.getProperties().put("TEST","TEST");*/
 
         Compilation compilation = new Compilation();
         compilation.setNetwork(COMP_NETWORK);
@@ -93,7 +93,8 @@ public class ManifestGeneratorTest extends ManifestTest {
         //manifest.getJobs().add(job);
     }
 
-    @Test public void testManifestGeneration() throws IOException, URISyntaxException {
+    @Test 
+    public void testManifestGeneration() throws IOException, URISyntaxException {
         String manifest = deploymentManager.generateManifest(this.manifest);
         String cmp_manifest = readFile("cmp_manifest.yml");
         assertEquals(cmp_manifest, manifest);

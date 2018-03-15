@@ -156,7 +156,7 @@ public class ExampleBindingService extends BindingServiceImpl {
         try {
             connection = new BoshConnection(boshProperties.getUsername(),
                     boshProperties.getPassword(),
-                    boshProperties.getHost(), boshProperties.getAuthentication()).authenticate();
+                    boshProperties.getHost(), 25555, boshProperties.getAuthentication()).authenticate();
             Observable<Session> oSession = connection.connection().vms().ssh(new SSHConfig("smb" + serviceInstance, "serviceBroker", null, "samba", VMINDEX), "get_credentials.sh");
             Session session = oSession.toBlocking().first();
             Channel chanel = session.openChannel("shell");
