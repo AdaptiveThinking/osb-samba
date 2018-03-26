@@ -6,6 +6,7 @@ package de.evoila.cf.broker.service.custom;
 import de.evoila.cf.broker.bean.BoshProperties;
 import de.evoila.cf.broker.exception.ServiceBrokerException;
 import de.evoila.cf.broker.model.*;
+import de.evoila.cf.broker.model.volume.*;
 import de.evoila.cf.broker.service.impl.BindingServiceImpl;
 import de.evoila.cf.broker.util.RandomString;
 import de.evoila.cf.cpi.bosh.connection.BoshConnection;
@@ -59,6 +60,19 @@ public class SambaBindingService extends BindingServiceImpl {
     }
 
     @Override
+    protected ServiceInstanceBinding bindService(String bindingId, ServiceInstanceBindingRequest serviceInstanceBindingRequest,
+                          ServiceInstance serviceInstance, Plan plan) throws ServiceBrokerException {
+
+        Map<String, Object> credentials = this.createCredentials(bindingId, serviceInstanceBindingRequest, serviceInstance, plan, null);
+        List<VolumeMount> volumeMounts = this.createMountPoint(serviceInstance, serviceInstanceBindingRequest, credentials);
+
+        ServiceInstanceBinding serviceInstanceBinding = new ServiceInstanceBinding(bindingId, serviceInstance.getId(), credentials, null);
+        serviceInstanceBinding.setVolumeMounts(volumeMounts);
+
+        return serviceInstanceBinding;
+    }
+
+    @Override
     protected Map<String, Object> createCredentials(String bindingId, ServiceInstanceBindingRequest serviceInstanceBindingRequest,
                                                     ServiceInstance serviceInstance, Plan plan, ServerAddress host) throws ServiceBrokerException {
 
@@ -74,8 +88,6 @@ public class SambaBindingService extends BindingServiceImpl {
             log.error("creating credentials failed");
             throw new ServiceBrokerException("creating credentials failed");
         }
-
-        this.createMountPoint(bindingId, serviceInstance, plan, host, serviceInstanceBindingRequest, credentials);
 
         log.info("credentials created successfully");
 
@@ -95,10 +107,9 @@ public class SambaBindingService extends BindingServiceImpl {
         log.info("credentials deleted successfully");
     }
 
-    protected List<VolumeMounts> createMountPoint(String bindingId, ServiceInstance serviceInstance, Plan plan,
-                                                  ServerAddress host, ServiceInstanceBindingRequest request,
-                                                  Map<String, Object> credentials) {
-        VolumeMounts volumeMounts = new VolumeMounts();
+    protected List<VolumeMount> createMountPoint(ServiceInstance serviceInstance, ServiceInstanceBindingRequest request,
+                                                 Map<String, Object> credentials) {
+        VolumeMount volumeMounts = new VolumeMount();
         if (serviceInstance.getHosts().get(0) == null)
             return null;
 

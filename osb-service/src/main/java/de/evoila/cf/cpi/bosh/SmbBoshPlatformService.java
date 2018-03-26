@@ -1,7 +1,6 @@
 package de.evoila.cf.cpi.bosh;
 
 import de.evoila.cf.broker.bean.BoshProperties;
-import de.evoila.cf.broker.exception.PlatformException;
 import de.evoila.cf.broker.model.DashboardClient;
 import de.evoila.cf.broker.model.Plan;
 import de.evoila.cf.broker.model.ServiceInstance;
@@ -22,7 +21,7 @@ import java.util.Optional;
 @Service
 public class SmbBoshPlatformService extends BoshPlatformService {
 
-    private static final int defaultPort = 4443;
+    private static final int defaultPort = 5000;
 
     public SmbBoshPlatformService(PlatformRepository repository, CatalogService catalogService, ServicePortAvailabilityVerifier availabilityVerifier,
                                   BoshProperties boshProperties, Optional<DashboardClient> dashboardClient, DeploymentManager deploymentManager) {
@@ -47,6 +46,6 @@ public class SmbBoshPlatformService extends BoshPlatformService {
     }
 
     @Override
-    public void postDeleteInstance(ServiceInstance serviceInstance) throws PlatformException {}
+    public void postDeleteInstance(ServiceInstance serviceInstance) {}
 
 }

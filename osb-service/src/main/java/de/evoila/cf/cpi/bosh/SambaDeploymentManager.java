@@ -8,7 +8,6 @@ import de.evoila.cf.cpi.bosh.deployment.DeploymentManager;
 import de.evoila.cf.cpi.bosh.deployment.manifest.Manifest;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,13 +29,21 @@ public class SambaDeploymentManager extends DeploymentManager {
     protected void replaceParameters(ServiceInstance serviceInstance, Manifest manifest, Plan plan, Map<String, String> customParameters) {
         HashMap<String, Object> properties = new HashMap<>();
         properties.putAll(plan.getMetadata().getCustomParameters());
-        properties.putAll(customParameters);
 
-        SecureRandom random = new SecureRandom();
-        HashMap<String, Object> manProperties = new HashMap<String, Object >();
+        if (customParameters != null && !customParameters.isEmpty())
+            properties.putAll(customParameters);
 
-        HashMap<String, Object> rest = new HashMap<String, Object>();
-        HashMap<String, Object> smb = new HashMap<String, Object>();
+        HashMap<String, Object> manifestProperties = (HashMap<String, Object>) manifest
+                .getInstanceGroups()
+                .stream()
+                .filter(i -> {
+                    if (i.getName().equals("samba"))
+                        return true;
+                    return false;
+                }).findFirst().get().getProperties();
+
+        HashMap<String, Object> smb = (HashMap<String, Object>) manifestProperties.get("smb");
+        HashMap<String, Object> rest = (HashMap<String, Object>) manifestProperties.get("rest");
 
         String username = randomStringUser.nextString();
         String password = randomStringPassword.nextString();
@@ -45,9 +52,6 @@ public class SambaDeploymentManager extends DeploymentManager {
         rest.put("user", username);
         rest.put("password", password);
         smb.put("usergroup", usergroup);
-
-        manProperties.put("rest", rest);
-        manProperties.put("smb", smb);
 
         serviceInstance.setUsername(username);
         serviceInstance.setPassword(password);
