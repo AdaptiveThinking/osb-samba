@@ -3,31 +3,33 @@ package de.evoila.cf.cpi.bosh;
 import de.evoila.cf.broker.bean.BoshProperties;
 import de.evoila.cf.broker.model.Plan;
 import de.evoila.cf.broker.model.ServiceInstance;
+import de.evoila.cf.broker.util.RandomString;
 import de.evoila.cf.cpi.bosh.deployment.DeploymentManager;
 import de.evoila.cf.cpi.bosh.deployment.manifest.Manifest;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by jannikheyl on 19.01.18.
  */
 @Service
-public class SambaDeploymentManager extends DeploymentManager{
-    public static final String VOLUME_SIZE = "volumeSize";
-    public static final String VM_TYPE = "vm_type";
-    public static final String VOLUME_UNIT = "volumeUnit";
+public class SambaDeploymentManager extends DeploymentManager {
+
+    private RandomString randomStringUser = new RandomString(10);
+    private RandomString randomStringPassword = new RandomString(15);
+    private RandomString randomStringUsergroup = new RandomString(15);
 
     public SambaDeploymentManager(BoshProperties properties) {
        super (properties);
     }
 
     @Override
-    protected void replaceParameters(ServiceInstance instance, Manifest manifest, Plan plan, Map<String, String> customParameters) {
+    protected void replaceParameters(ServiceInstance serviceInstance, Manifest manifest, Plan plan, Map<String, String> customParameters) {
         HashMap<String, Object> properties = new HashMap<>();
-        properties.putAll(plan.getMetadata());
+        properties.putAll(plan.getMetadata().getCustomParameters());
         properties.putAll(customParameters);
 
         SecureRandom random = new SecureRandom();
@@ -36,26 +38,21 @@ public class SambaDeploymentManager extends DeploymentManager{
         HashMap<String, Object> rest = new HashMap<String, Object>();
         HashMap<String, Object> smb = new HashMap<String, Object>();
 
-        rest.put("user", new BigInteger(130, random).toString(32).toString());
-        rest.put("password", new BigInteger(130, random).toString(32).toString());
-        smb.put("usergroup", new BigInteger(130, random).toString(32).toString());
+        String username = randomStringUser.nextString();
+        String password = randomStringPassword.nextString();
+        String usergroup = randomStringUsergroup.nextString();
+
+        rest.put("user", username);
+        rest.put("password", password);
+        smb.put("usergroup", usergroup);
 
         manProperties.put("rest", rest);
         manProperties.put("smb", smb);
 
-           //persist credentials in serviceInstant Object
-        instance.setUsername((String)rest.get("user"));
-        instance.setPassword((String)rest.get("password"));
-        instance.setUsergroup((String) smb.get("usergroup"));
+        serviceInstance.setUsername(username);
+        serviceInstance.setPassword(password);
+        serviceInstance.setUsergroup(usergroup);
 
-        if(plan.getVolumeSize() != null){
-            manifest.getJobs().get(0).setPersistent_disk(plan.getVolumeSize(), plan.getVolumeUnit());
-        }
-        if(properties.containsKey(VM_TYPE)){
-            manifest.getJobs().get(0).setVm_type((String) properties.get(VM_TYPE));
-        }
-        manifest.getJobs().get(0).setProperties(manProperties);
-
-
+        this.updateInstanceGroupConfiguration(manifest, plan);
     }
 }
