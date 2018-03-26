@@ -3,59 +3,60 @@ package de.evoila.cf.cpi.bosh;
 import de.evoila.cf.broker.bean.BoshProperties;
 import de.evoila.cf.broker.model.Plan;
 import de.evoila.cf.broker.model.ServiceInstance;
+import de.evoila.cf.broker.util.RandomString;
 import de.evoila.cf.cpi.bosh.deployment.DeploymentManager;
 import de.evoila.cf.cpi.bosh.deployment.manifest.Manifest;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by jannikheyl on 19.01.18.
  */
 @Service
-public class SambaDeploymentManager extends DeploymentManager{
-    public static final String VOLUME_SIZE = "volumeSize";
-    public static final String VM_TYPE = "vm_type";
-    public static final String VOLUME_UNIT = "volumeUnit";
+public class SambaDeploymentManager extends DeploymentManager {
+
+    private RandomString randomStringUser = new RandomString(10);
+    private RandomString randomStringPassword = new RandomString(15);
+    private RandomString randomStringUsergroup = new RandomString(15);
 
     public SambaDeploymentManager(BoshProperties properties) {
        super (properties);
     }
 
     @Override
-    protected void replaceParameters(ServiceInstance instance, Manifest manifest, Plan plan, Map<String, String> customParameters) {
+    protected void replaceParameters(ServiceInstance serviceInstance, Manifest manifest, Plan plan, Map<String, String> customParameters) {
         HashMap<String, Object> properties = new HashMap<>();
-        properties.putAll(plan.getMetadata());
-        properties.putAll(customParameters);
+        properties.putAll(plan.getMetadata().getCustomParameters());
 
-        SecureRandom random = new SecureRandom();
-        HashMap<String, Object> manProperties = new HashMap<String, Object >();
+        if (customParameters != null && !customParameters.isEmpty())
+            properties.putAll(customParameters);
 
-        HashMap<String, Object> rest = new HashMap<String, Object>();
-        HashMap<String, Object> smb = new HashMap<String, Object>();
+        HashMap<String, Object> manifestProperties = (HashMap<String, Object>) manifest
+                .getInstanceGroups()
+                .stream()
+                .filter(i -> {
+                    if (i.getName().equals("samba"))
+                        return true;
+                    return false;
+                }).findFirst().get().getProperties();
 
-        rest.put("user", new BigInteger(130, random).toString(32).toString());
-        rest.put("password", new BigInteger(130, random).toString(32).toString());
-        smb.put("usergroup", new BigInteger(130, random).toString(32).toString());
+        HashMap<String, Object> smb = (HashMap<String, Object>) manifestProperties.get("smb");
+        HashMap<String, Object> rest = (HashMap<String, Object>) manifestProperties.get("rest");
 
-        manProperties.put("rest", rest);
-        manProperties.put("smb", smb);
+        String username = randomStringUser.nextString();
+        String password = randomStringPassword.nextString();
+        String usergroup = randomStringUsergroup.nextString();
 
-           //persist credentials in serviceInstant Object
-        instance.setUsername((String)rest.get("user"));
-        instance.setPassword((String)rest.get("password"));
-        instance.setUsergroup((String) smb.get("usergroup"));
+        rest.put("user", username);
+        rest.put("password", password);
+        smb.put("usergroup", usergroup);
 
-        if(plan.getVolumeSize() != null){
-            manifest.getJobs().get(0).setPersistent_disk(plan.getVolumeSize(), plan.getVolumeUnit());
-        }
-        if(properties.containsKey(VM_TYPE)){
-            manifest.getJobs().get(0).setVm_type((String) properties.get(VM_TYPE));
-        }
-        manifest.getJobs().get(0).setProperties(manProperties);
+        serviceInstance.setUsername(username);
+        serviceInstance.setPassword(password);
+        serviceInstance.setUsergroup(usergroup);
 
-
+        this.updateInstanceGroupConfiguration(manifest, plan);
     }
 }

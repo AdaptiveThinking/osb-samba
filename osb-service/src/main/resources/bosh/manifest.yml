@@ -1,9 +1,9 @@
 ---
 # https://bosh.io/docs/cli-v2.html#deployment-mgmt
-name: smb
+name: osb-samba
 
 releases:
-- name: samba
+- name: osb-samba
   version: latest
 
 update:
@@ -20,18 +20,18 @@ stemcells:
     os: ubuntu-trusty
     version: latest
 
-jobs:
+instance_groups:
 - name: samba
-  release: samba
   instances: 1
-  vm_type: minimal
-  persistent_disk: 10000
-  stemcell: default
   jobs:
-  - release: samba
+  - release: osb-samba
     name: samba
+  vm_type: default
+  stemcell: default
+  azs:
+  - z1
   networks:
-  - name: service-1
+  - name: default
   properties:
     smb:
       usergroup:
