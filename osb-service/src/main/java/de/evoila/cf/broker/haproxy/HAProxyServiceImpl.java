@@ -1,4 +1,4 @@
-	package de.evoila.cf.broker.haproxy;
+package de.evoila.cf.broker.haproxy;
 
 import de.evoila.cf.broker.bean.HAProxyConfiguration;
 import de.evoila.cf.broker.model.Mode;
