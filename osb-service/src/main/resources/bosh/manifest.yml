@@ -31,7 +31,7 @@ instance_groups:
   azs:
   - z1
   networks:
-  - name: default
+  - name: service
   properties:
     smb:
       usergroup:
