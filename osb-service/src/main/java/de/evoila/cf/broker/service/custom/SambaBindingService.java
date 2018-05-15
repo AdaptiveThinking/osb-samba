@@ -115,7 +115,7 @@ public class SambaBindingService extends BindingServiceImpl {
 
         //Set Mountpoint on container default is /mnt/
         if (request != null && request.getParameters() != null && request.getParameters().containsKey("container_dir")) {
-            volumeMounts.setContainerDir(request.getParameters().get("container_dir"));
+            volumeMounts.setContainerDir((String) request.getParameters().get("container_dir"));
         } else {
             volumeMounts.setContainerDir("/mnt/");
         }
