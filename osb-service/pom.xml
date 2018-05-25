@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>cf-service-broker-samba</artifactId>
+    <artifactId>osb-samba</artifactId>
     <packaging>jar</packaging>
-    <name>ssb-samba</name>
+    <name>osb-samba</name>
     <version>1.2.0</version>
 
     <parent>
