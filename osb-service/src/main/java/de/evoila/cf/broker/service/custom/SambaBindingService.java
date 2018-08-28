@@ -95,7 +95,7 @@ public class SambaBindingService extends BindingServiceImpl {
     }
 
     @Override
-    protected void deleteBinding(ServiceInstanceBinding binding, ServiceInstance serviceInstance, Plan plan) throws ServiceBrokerException {
+    protected void unbindService(ServiceInstanceBinding binding, ServiceInstance serviceInstance, Plan plan) throws ServiceBrokerException {
         String username = binding.getCredentials().get(USERNAME).toString();
 
         Map<String, Object> status = this.executeRequest(serviceInstance, username, null, HttpMethod.DELETE);

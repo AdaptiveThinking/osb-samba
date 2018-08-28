@@ -6,6 +6,7 @@ import de.evoila.cf.broker.model.ServiceInstance;
 import de.evoila.cf.broker.util.RandomString;
 import de.evoila.cf.cpi.bosh.deployment.DeploymentManager;
 import de.evoila.cf.cpi.bosh.deployment.manifest.Manifest;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -21,8 +22,8 @@ public class SambaDeploymentManager extends DeploymentManager {
     private RandomString randomStringPassword = new RandomString(15);
     private RandomString randomStringUsergroup = new RandomString(15);
 
-    public SambaDeploymentManager(BoshProperties properties) {
-       super (properties);
+    public SambaDeploymentManager(BoshProperties properties, Environment environment) {
+       super (properties,environment);
     }
 
     @Override
