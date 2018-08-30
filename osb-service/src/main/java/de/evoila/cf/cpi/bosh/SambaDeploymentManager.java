@@ -15,7 +15,6 @@ import java.util.Map;
 /**
  * Created by jannikheyl on 19.01.18.
  */
-@Service
 public class SambaDeploymentManager extends DeploymentManager {
 
     private RandomString randomStringUser = new RandomString(10);
@@ -23,7 +22,7 @@ public class SambaDeploymentManager extends DeploymentManager {
     private RandomString randomStringUsergroup = new RandomString(15);
 
     public SambaDeploymentManager(BoshProperties properties, Environment environment) {
-       super (properties,environment);
+       super (properties, environment);
     }
 
     @Override

@@ -11,6 +11,7 @@ import de.evoila.cf.cpi.bosh.deployment.DeploymentManager;
 import io.bosh.client.deployments.Deployment;
 import io.bosh.client.errands.ErrandSummary;
 import io.bosh.client.vms.Vm;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
@@ -23,10 +24,14 @@ public class SmbBoshPlatformService extends BoshPlatformService {
 
     private static final int defaultPort = 5000;
 
-    public SmbBoshPlatformService(PlatformRepository repository, CatalogService catalogService, ServicePortAvailabilityVerifier availabilityVerifier,
-                                  BoshProperties boshProperties, Optional<DashboardClient> dashboardClient, DeploymentManager deploymentManager) {
+    public SmbBoshPlatformService(PlatformRepository repository, CatalogService catalogService,
+                                  ServicePortAvailabilityVerifier availabilityVerifier,
+                                  BoshProperties boshProperties, Optional<DashboardClient> dashboardClient,
+                                  DeploymentManager deploymentManager,
+                                  Environment environment) {
 
-        super(repository, catalogService, availabilityVerifier, boshProperties,  dashboardClient, deploymentManager);
+        super(repository, catalogService, availabilityVerifier,
+                boshProperties, dashboardClient, new SambaDeploymentManager(boshProperties, environment));
     }
 
     public void runCreateErrands(ServiceInstance instance, Plan plan, Deployment deployment, Observable<List<ErrandSummary>> errands) {}
