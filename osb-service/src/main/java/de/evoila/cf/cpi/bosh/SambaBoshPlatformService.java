@@ -20,15 +20,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SmbBoshPlatformService extends BoshPlatformService {
+public class SambaBoshPlatformService extends BoshPlatformService {
 
     private static final int defaultPort = 5000;
 
-    public SmbBoshPlatformService(PlatformRepository repository, CatalogService catalogService,
-                                  ServicePortAvailabilityVerifier availabilityVerifier,
-                                  BoshProperties boshProperties, Optional<DashboardClient> dashboardClient,
-                                  DeploymentManager deploymentManager,
-                                  Environment environment) {
+    public SambaBoshPlatformService(PlatformRepository repository, CatalogService catalogService,
+                                    ServicePortAvailabilityVerifier availabilityVerifier,
+                                    BoshProperties boshProperties, Optional<DashboardClient> dashboardClient,
+                                    Environment environment) {
 
         super(repository, catalogService, availabilityVerifier,
                 boshProperties, dashboardClient, new SambaDeploymentManager(boshProperties, environment));

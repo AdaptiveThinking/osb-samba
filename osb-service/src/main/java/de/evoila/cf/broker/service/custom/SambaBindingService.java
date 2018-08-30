@@ -3,7 +3,6 @@
  */
 package de.evoila.cf.broker.service.custom;
 
-import de.evoila.cf.broker.bean.BoshProperties;
 import de.evoila.cf.broker.exception.ServiceBrokerException;
 import de.evoila.cf.broker.model.*;
 import de.evoila.cf.broker.model.volume.*;
@@ -12,7 +11,6 @@ import de.evoila.cf.broker.util.RandomString;
 import de.evoila.cf.cpi.bosh.connection.BoshConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -45,9 +43,6 @@ public class SambaBindingService extends BindingServiceImpl {
     private BoshConnection connection;
 
     private final int VMINDEX = 0;
-
-    @Autowired
-    BoshProperties boshProperties;
 
     @Override
     public ServiceInstanceBinding getServiceInstanceBinding(String id) {
