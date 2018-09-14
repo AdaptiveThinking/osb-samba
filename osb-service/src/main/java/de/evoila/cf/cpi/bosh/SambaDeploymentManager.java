@@ -7,7 +7,6 @@ import de.evoila.cf.broker.util.RandomString;
 import de.evoila.cf.cpi.bosh.deployment.DeploymentManager;
 import de.evoila.cf.cpi.bosh.deployment.manifest.Manifest;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
