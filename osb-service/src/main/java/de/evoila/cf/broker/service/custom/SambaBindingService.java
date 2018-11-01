@@ -49,7 +49,7 @@ public class SambaBindingService extends BindingServiceImpl {
 
     private final int VMINDEX = 0;
 
-    SambaBindingService(BindingRepository bindingRepository, ServiceDefinitionRepository serviceDefinitionRepository,
+    public SambaBindingService(BindingRepository bindingRepository, ServiceDefinitionRepository serviceDefinitionRepository,
                              ServiceInstanceRepository serviceInstanceRepository, RouteBindingRepository routeBindingRepository,
                              HAProxyService haProxyService) {
         super(bindingRepository, serviceDefinitionRepository, serviceInstanceRepository, routeBindingRepository, haProxyService);
