@@ -1,31 +1,34 @@
 package de.evoila.cf.cpi.bosh;
 
 import de.evoila.cf.broker.bean.BoshProperties;
-import de.evoila.cf.broker.model.Plan;
 import de.evoila.cf.broker.model.ServiceInstance;
-import de.evoila.cf.broker.util.RandomString;
+import de.evoila.cf.broker.model.catalog.plan.Plan;
+import de.evoila.cf.broker.model.credential.UsernamePasswordCredential;
+import de.evoila.cf.cpi.CredentialConstants;
 import de.evoila.cf.cpi.bosh.deployment.DeploymentManager;
 import de.evoila.cf.cpi.bosh.deployment.manifest.Manifest;
+import de.evoila.cf.security.credentials.CredentialStore;
+import de.evoila.cf.security.utils.RandomString;
 import org.springframework.core.env.Environment;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by jannikheyl on 19.01.18.
+ * @author Jannik Heyl.
  */
 public class SambaDeploymentManager extends DeploymentManager {
 
-    private RandomString randomStringUser = new RandomString(10);
-    private RandomString randomStringPassword = new RandomString(15);
-    private RandomString randomStringUsergroup = new RandomString(15);
+    private CredentialStore credentialStore;
 
-    public SambaDeploymentManager(BoshProperties properties, Environment environment) {
+    public SambaDeploymentManager(BoshProperties properties, Environment environment, CredentialStore credentialStore) {
        super (properties, environment);
+       this.credentialStore = credentialStore;
     }
 
     @Override
-    protected void replaceParameters(ServiceInstance serviceInstance, Manifest manifest, Plan plan, Map<String, Object> customParameters) {
+    protected void replaceParameters(ServiceInstance serviceInstance, Manifest manifest, Plan plan,
+                                     Map<String, Object> customParameters, boolean isUpdate) {
         HashMap<String, Object> properties = new HashMap<>();
         properties.putAll(plan.getMetadata().getCustomParameters());
 
@@ -44,16 +47,13 @@ public class SambaDeploymentManager extends DeploymentManager {
         HashMap<String, Object> smb = (HashMap<String, Object>) manifestProperties.get("smb");
         HashMap<String, Object> rest = (HashMap<String, Object>) manifestProperties.get("rest");
 
-        String username = randomStringUser.nextString();
-        String password = randomStringPassword.nextString();
-        String usergroup = randomStringUsergroup.nextString();
+        UsernamePasswordCredential usernamePasswordCredential = credentialStore.createUser(serviceInstance, CredentialConstants.ROOT_CREDENTIALS);
+        String usergroup = new RandomString(15).nextString();
 
-        rest.put("user", username);
-        rest.put("password", password);
+        rest.put("user", usernamePasswordCredential.getUsername());
+        rest.put("password", usernamePasswordCredential.getPassword());
         smb.put("usergroup", usergroup);
 
-        serviceInstance.setUsername(username);
-        serviceInstance.setPassword(password);
         serviceInstance.setUsergroup(usergroup);
 
         this.updateInstanceGroupConfiguration(manifest, plan);

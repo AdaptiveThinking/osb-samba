@@ -5,15 +5,17 @@ package de.evoila.cf.broker.service.custom;
 
 import de.evoila.cf.broker.exception.ServiceBrokerException;
 import de.evoila.cf.broker.model.*;
+import de.evoila.cf.broker.model.catalog.ServerAddress;
+import de.evoila.cf.broker.model.catalog.plan.Plan;
+import de.evoila.cf.broker.model.credential.UsernamePasswordCredential;
 import de.evoila.cf.broker.model.volume.*;
-import de.evoila.cf.broker.repository.BindingRepository;
-import de.evoila.cf.broker.repository.RouteBindingRepository;
-import de.evoila.cf.broker.repository.ServiceDefinitionRepository;
-import de.evoila.cf.broker.repository.ServiceInstanceRepository;
+import de.evoila.cf.broker.repository.*;
+import de.evoila.cf.broker.service.AsyncBindingService;
 import de.evoila.cf.broker.service.HAProxyService;
 import de.evoila.cf.broker.service.impl.BindingServiceImpl;
-import de.evoila.cf.broker.util.RandomString;
-import de.evoila.cf.cpi.bosh.connection.BoshConnection;
+import de.evoila.cf.cpi.CredentialConstants;
+import de.evoila.cf.security.credentials.CredentialStore;
+import de.evoila.cf.security.utils.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -38,26 +40,27 @@ public class SambaBindingService extends BindingServiceImpl {
     private Logger log = LoggerFactory.getLogger(getClass());
 
     private static String USERNAME = "username";
+
     private static String PASSWORD = "password";
+
     private static String SCHEME = "http";
+
     private static int PORT = 5000;
-
-    private RandomString usernameRandomString = new RandomString(10);
-    private RandomString passwordRandomString = new RandomString(15);
-
-    private BoshConnection connection;
 
     private final int VMINDEX = 0;
 
-    public SambaBindingService(BindingRepository bindingRepository, ServiceDefinitionRepository serviceDefinitionRepository,
-                             ServiceInstanceRepository serviceInstanceRepository, RouteBindingRepository routeBindingRepository,
-                             HAProxyService haProxyService) {
-        super(bindingRepository, serviceDefinitionRepository, serviceInstanceRepository, routeBindingRepository, haProxyService);
-    }
+    private CredentialStore credentialStore;
 
-    @Override
-    public ServiceInstanceBinding getServiceInstanceBinding(String id) {
-        throw new UnsupportedOperationException();
+    public SambaBindingService(BindingRepository bindingRepository, ServiceDefinitionRepository serviceDefinitionRepository,
+                               ServiceInstanceRepository serviceInstanceRepository, RouteBindingRepository routeBindingRepository,
+                               HAProxyService haProxyService, JobRepository jobRepository,
+                               AsyncBindingService asyncBindingService, PlatformRepository platformRepository,
+                               CredentialStore credentialStore) {
+        super(bindingRepository, serviceDefinitionRepository,
+                serviceInstanceRepository, routeBindingRepository,
+                haProxyService, jobRepository,
+                asyncBindingService, platformRepository);
+        this.credentialStore = credentialStore;
     }
 
     @Override
@@ -68,7 +71,6 @@ public class SambaBindingService extends BindingServiceImpl {
     @Override
     protected ServiceInstanceBinding bindService(String bindingId, ServiceInstanceBindingRequest serviceInstanceBindingRequest,
                           ServiceInstance serviceInstance, Plan plan) throws ServiceBrokerException {
-
         Map<String, Object> credentials = this.createCredentials(bindingId, serviceInstanceBindingRequest, serviceInstance, plan, null);
         List<VolumeMount> volumeMounts = this.createMountPoint(serviceInstance, serviceInstanceBindingRequest, credentials);
 
@@ -82,17 +84,17 @@ public class SambaBindingService extends BindingServiceImpl {
     protected Map<String, Object> createCredentials(String bindingId, ServiceInstanceBindingRequest serviceInstanceBindingRequest,
                                                     ServiceInstance serviceInstance, Plan plan, ServerAddress host) throws ServiceBrokerException {
 
-        String username = usernameRandomString.nextString();
-        String password = passwordRandomString.nextString();
+        credentialStore.createUser(serviceInstance, bindingId);
+        UsernamePasswordCredential usernamePasswordCredential = credentialStore.getUser(serviceInstance, bindingId);
 
         Map<String, Object> credentials = new HashMap<>();
-        credentials.put(USERNAME, username);
-        credentials.put(PASSWORD, password);
+        credentials.put(USERNAME, usernamePasswordCredential.getUsername());
+        credentials.put(PASSWORD, usernamePasswordCredential.getPassword());
 
-        Map<String, Object> status = this.executeRequest(serviceInstance, username, credentials, HttpMethod.POST);
+        Map<String, Object> status = this.executeRequest(serviceInstance, usernamePasswordCredential.getUsername(), credentials, HttpMethod.POST);
         if (status.containsKey("failure")) {
-            log.error("creating credentials failed");
-            throw new ServiceBrokerException("creating credentials failed");
+            log.error("Creating credentials failed");
+            throw new ServiceBrokerException("Creating credentials failed");
         }
 
         log.info("credentials created successfully");
@@ -103,12 +105,12 @@ public class SambaBindingService extends BindingServiceImpl {
     @Override
     protected void unbindService(ServiceInstanceBinding binding, ServiceInstance serviceInstance, Plan plan) throws ServiceBrokerException {
         String username = binding.getCredentials().get(USERNAME).toString();
-
         Map<String, Object> status = this.executeRequest(serviceInstance, username, null, HttpMethod.DELETE);
         if (status.containsKey("failure")) {
-            log.error("creating credentials failed");
-            throw new ServiceBrokerException("creating credentials failed");
+            log.error("Deleting credentials failed");
+            throw new ServiceBrokerException("Deleting credentials failed");
         }
+        credentialStore.deleteCredentials(serviceInstance, binding.getId());
 
         log.info("credentials deleted successfully");
     }
@@ -160,7 +162,8 @@ public class SambaBindingService extends BindingServiceImpl {
     }
 
     private HttpHeaders getHttpHeaders(ServiceInstance serviceInstance) {
-        String apiCreds = serviceInstance.getUsername() + ":" + serviceInstance.getPassword();
+        UsernamePasswordCredential usernamePasswordCredential = credentialStore.getUser(serviceInstance, CredentialConstants.ROOT_CREDENTIALS);
+        String apiCreds = usernamePasswordCredential.getUsername() + ":" + usernamePasswordCredential.getPassword();
         apiCreds = new String(Base64.encode(apiCreds.getBytes()));
         HttpHeaders header = new HttpHeaders();
         header.add("Authorization", "Basic " + apiCreds);
