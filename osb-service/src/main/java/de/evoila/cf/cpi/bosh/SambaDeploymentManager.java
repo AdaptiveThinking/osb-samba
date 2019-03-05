@@ -28,7 +28,7 @@ public class SambaDeploymentManager extends DeploymentManager {
 
     @Override
     protected void replaceParameters(ServiceInstance serviceInstance, Manifest manifest, Plan plan,
-                                     Map<String, Object> customParameters, boolean isUpdate) {
+                                     Map<String, Object> customParameters, boolean isU) {
         HashMap<String, Object> properties = new HashMap<>();
         properties.putAll(plan.getMetadata().getCustomParameters());
 
