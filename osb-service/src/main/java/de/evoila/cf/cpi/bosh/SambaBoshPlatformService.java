@@ -7,6 +7,7 @@ import de.evoila.cf.broker.model.ServiceInstance;
 import de.evoila.cf.broker.repository.PlatformRepository;
 import de.evoila.cf.broker.service.CatalogService;
 import de.evoila.cf.broker.service.availability.ServicePortAvailabilityVerifier;
+import de.evoila.cf.cpi.CredentialConstants;
 import de.evoila.cf.security.credentials.CredentialStore;
 import io.bosh.client.deployments.Deployment;
 import io.bosh.client.errands.ErrandSummary;
@@ -24,13 +25,16 @@ public class SambaBoshPlatformService extends BoshPlatformService {
 
     private static final int defaultPort = 5000;
 
+    private CredentialStore credentialStore;
+
     public SambaBoshPlatformService(PlatformRepository repository, CatalogService catalogService,
                                     ServicePortAvailabilityVerifier availabilityVerifier,
                                     BoshProperties boshProperties, Optional<DashboardClient> dashboardClient,
                                     Environment environment, CredentialStore credentialStore) {
-
         super(repository, catalogService, availabilityVerifier,
-                boshProperties, dashboardClient, new SambaDeploymentManager(boshProperties, environment, credentialStore));
+                boshProperties, dashboardClient,
+                new SambaDeploymentManager(boshProperties, environment, credentialStore));
+        this.credentialStore = credentialStore;
     }
 
     public void runCreateErrands(ServiceInstance instance, Plan plan, Deployment deployment, Observable<List<ErrandSummary>> errands) {}
@@ -50,6 +54,8 @@ public class SambaBoshPlatformService extends BoshPlatformService {
     }
 
     @Override
-    public void postDeleteInstance(ServiceInstance serviceInstance) {}
+    public void postDeleteInstance(ServiceInstance serviceInstance) {
+        credentialStore.deleteCredentials(serviceInstance, CredentialConstants.ROOT_CREDENTIALS);
+    }
 
 }

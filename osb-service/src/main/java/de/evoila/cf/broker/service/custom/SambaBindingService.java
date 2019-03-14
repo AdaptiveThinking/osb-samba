@@ -64,11 +64,6 @@ public class SambaBindingService extends BindingServiceImpl {
     }
 
     @Override
-    protected RouteBinding bindRoute(ServiceInstance serviceInstance, String route) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     protected ServiceInstanceBinding bindService(String bindingId, ServiceInstanceBindingRequest serviceInstanceBindingRequest,
                           ServiceInstance serviceInstance, Plan plan) throws ServiceBrokerException {
         Map<String, Object> credentials = this.createCredentials(bindingId, serviceInstanceBindingRequest, serviceInstance, plan, null);
@@ -168,6 +163,11 @@ public class SambaBindingService extends BindingServiceImpl {
         HttpHeaders header = new HttpHeaders();
         header.add("Authorization", "Basic " + apiCreds);
         return header;
+    }
+
+    @Override
+    protected RouteBinding bindRoute(ServiceInstance serviceInstance, String route) {
+        throw new UnsupportedOperationException();
     }
 
 }
