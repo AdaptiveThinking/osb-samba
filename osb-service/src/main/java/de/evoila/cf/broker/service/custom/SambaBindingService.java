@@ -18,6 +18,7 @@ import de.evoila.cf.security.credentials.CredentialStore;
 import de.evoila.cf.security.utils.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -53,7 +54,7 @@ public class SambaBindingService extends BindingServiceImpl {
 
     public SambaBindingService(BindingRepository bindingRepository, ServiceDefinitionRepository serviceDefinitionRepository,
                                ServiceInstanceRepository serviceInstanceRepository, RouteBindingRepository routeBindingRepository,
-                               HAProxyService haProxyService, JobRepository jobRepository,
+                               @Autowired(required = false) HAProxyService haProxyService, JobRepository jobRepository,
                                AsyncBindingService asyncBindingService, PlatformRepository platformRepository,
                                CredentialStore credentialStore) {
         super(bindingRepository, serviceDefinitionRepository,
