@@ -8,23 +8,21 @@
 		<appender-ref ref="CONSOLE" />
 	</root>
 	
-	<logger name="de.evoila.cf" level="DEBUG" />
+	<logger name="de.evoila.cf" level="INFO" />
 	
-	<logger name="org.springframework.core" level="DEBUG" />
+	<logger name="org.springframework.core" level="INFO" />
 	
-	<logger name="org.springframework.beans" level="DEBUG" />
+	<logger name="org.springframework.beans" level="INFO" />
 	
-	<logger name="org.springframework.context" level="DEBUG" />
+	<logger name="org.springframework.context" level="INFO" />
 	
-	<logger name="org.springframework.web" level="DEBUG" />
+	<logger name="org.springframework.web" level="INFO" />
 	
-	<logger name="org.springframework.security" level="DEBUG" />
+	<logger name="org.springframework.security" level="INFO" />
 	
-	<logger name="org.apache.http" level="DEBUG" />
-	
-	<logger name="com.github.dockerjava" level="DEBUG" />
-	
-	<logger name="org.springframework.jndi" level="DEBUG" />
+	<logger name="org.apache.http" level="INFO" />
+
+	<logger name="org.springframework.jndi" level="INFO" />
 
 	<logger name="org.springframework.web.client.RestTemplate" level="DEBUG" />
 		
